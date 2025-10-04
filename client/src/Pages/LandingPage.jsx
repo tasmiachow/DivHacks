@@ -25,9 +25,7 @@ function LandingPage() {
         <div style={heroStyle}>
             <Container>
                 <h1 className="fw-bold display-4 mb-3">LinkUP NYC</h1>
-                <p className="lead text-muted mb-4">
-                    A collaborative platform where people come together to plan events and explore New York City experiences.
-                </p>
+                <p className="lead">FInd the best spots to meetup with your friends.</p>
                 <Button as={Link} to="/create-session" size="lg" style={btnStyle}>
                     Get Started
                 </Button>

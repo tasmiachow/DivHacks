@@ -10,7 +10,6 @@ function NavigationBar() {
         borderBottom: "1px solid rgba(255,255,255,0.4)",
         boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
     };
-
     return (
         <Navbar expand="lg" fixed="top" style={glassStyle} className="px-4 py-3">
             <Container fluid className="px-0">
