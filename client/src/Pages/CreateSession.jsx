@@ -18,7 +18,7 @@ function CreateSession() {
     return (
         <div style={bgStyle}>
             <Container>
-                <h2 className="text-center mb-5 fw-bold">What would you like to do?</h2>
+                <h2 className="pt-5 text-center mb-5 fw-bold">What would you like to do?</h2>
                 <Row className="g-4 justify-content-center">
                     <Col xs={12} md={5}>
                         <Card style={cardStyle} className="p-4 text-center">

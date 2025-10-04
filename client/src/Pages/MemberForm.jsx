@@ -23,7 +23,7 @@ function MemberForm() {
     return (
         <div className="py-5 min-vh-100 bg-light">
             <Container>
-                <h2 className="mb-4 text-center fw-bold">Join a Party</h2>
+                <h2 className="pt-5 mb-4 text-center fw-bold">Join a Party</h2>
                 <Row className="justify-content-center">
                     <Col xs={12} md={8} lg={6}>
                         {submitted && (
