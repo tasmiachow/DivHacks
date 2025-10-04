@@ -7,6 +7,6 @@
 - npm run dev
 
 ## Backend 
-- cd serer
+- cd server
 - npm install
 - node index.js
