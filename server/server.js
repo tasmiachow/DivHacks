@@ -1,16 +1,17 @@
-import express from 'express'
+const express = require('express');
+const cors = require('cors');
 
+// --- SETUP OUR EXPRESS APP ---
 const app = express();
-const PORT = process.env.PORT || 3001;
+const port = 5000;
 
+// --- MIDDLEWARE ---
+app.use(cors()); // Allow requests from our React app
+app.use(express.json()); // Allow the server to read JSON from request bodies
 
-app.get('/', (req, res) => {
-    res.status(200).send('<h1 style="text-align:center;margin-top:50px;"> LINKUP </h1>');
-})
+// --- IMPORT & USE OUR ROUTES ---
+const sessionRoutes = require('./routes/sessionRoutes'); // Import our new router
+app.use('/api/session', sessionRoutes); // Tell Express to use these routes for any path that starts with /api/session
 
-
-
-
-app.listen(PORT, ()=> {
-    console.log(`🚀 Server listening on http://localhost:${PORT}`);
-})
+// --- START THE SERVER ---
+app.listen(port, () => console.log(`Server running on port ${port}`));
