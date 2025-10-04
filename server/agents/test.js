@@ -1,4 +1,5 @@
-import { getAISummary } from "../agents/graph.js";
+const { getAISummary } = require('../agents/graph');
+
 
 const testVenues = [
   { name: "Midtown Cafe", travelTimes: [1800, 2100, 1900] },
