@@ -23,9 +23,10 @@ function LandingPage() {
 
     return (
         <div style={heroStyle}>
+
             <Container>
-                <h1 className="fw-bold display-4 mb-3">LinkUP NYC</h1>
-                <p className="lead">FInd the best spots to meetup with your friends.</p>
+                <h1 className="fw-bold display-4 mb-3">LinkUP</h1>
+                <p className="lead">Find the best spots to meetup with your friends.</p>
                 <Button as={Link} to="/create-session" size="lg" style={btnStyle}>
                     Get Started
                 </Button>
@@ -35,3 +36,4 @@ function LandingPage() {
 }
 
 export default LandingPage;
+
