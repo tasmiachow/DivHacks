@@ -3,37 +3,36 @@ import { useLocation } from 'react-router-dom';
 import { Container, Row, Col, Card, Alert, Button } from 'react-bootstrap';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-// --- IMPORTANT: You need to put your Google Maps API key here ---
-// For a hackathon, it's okay to paste it here. For a real app, this would be in a .env file.
-const GOOGLE_MAPS_API_KEY = "AIzaSyC9XBqIgss1JbQ11gaVUEUyFuOAG88mKmk";
+// --- THIS IS THE NEW, SECURE WAY ---
+// Vite (your frontend tool) automatically reads the .env file in your client folder
+// and makes any variable starting with "VITE_" available here.
+const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 // --- STYLING for the Map Component ---
 const mapContainerStyle = {
   width: '100%',
-  height: '80vh', // 80% of the viewport height
+  height: '80vh',
   borderRadius: '15px'
 };
 
 function ResultsPage() {
   const location = useLocation();
   const results = location.state?.results;
-
-  // --- STATE MANAGEMENT ---
-  // We use state to keep track of which result we are currently showing (0, 1, or 2).
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // --- EVENT HANDLER for the "Next" button ---
   const handleNext = () => {
-    // This clever line cycles through the results: 0 -> 1 -> 2 -> 0 -> 1 ...
     setCurrentIndex((prevIndex) => (prevIndex + 1) % results.length);
   };
 
-  // If there are no results, show an error.
   if (!results || results.length === 0) {
     return <div className="py-5 min-vh-100 bg-light"><Container><Alert variant="warning" className="mt-5">No results found.</Alert></Container></div>;
   }
 
-  // Get the currently selected spot based on the index.
+  // This is a safety check. If the API key didn't load, we show a clear error.
+  if (!GOOGLE_MAPS_API_KEY) {
+    return <div className="py-5 min-vh-100 bg-light"><Container><Alert variant="danger" className="mt-5">Configuration Error: The Google Maps API Key is missing. Make sure it's in your client/.env file.</Alert></Container></div>;
+  }
+
   const currentSpot = results[currentIndex];
 
   return (
@@ -41,7 +40,7 @@ function ResultsPage() {
       <Container fluid className="pt-5">
         <h2 className="mb-4 fw-bold text-center">Your Top Meetup Spots!</h2>
         <Row>
-          {/* --- LEFT SIDE: The Details Panel --- */}
+          {/* LEFT SIDE: The Details Panel */}
           <Col md={5}>
             <Card className="h-100 shadow-lg p-3" style={{ borderRadius: '15px' }}>
               <Card.Body>
@@ -70,20 +69,19 @@ function ResultsPage() {
             </Card>
           </Col>
 
-          {/* --- RIGHT SIDE: The Google Map --- */}
+          {/* RIGHT SIDE: The Google Map */}
           <Col md={7}>
             <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 zoom={14}
-                center={currentSpot.location} // The map will center on the currently selected spot
+                center={currentSpot.location}
               >
-                {/* We loop through ALL results to place a pin for each one */}
                 {results.map((spot, index) => (
                   <Marker
                     key={spot.place_id}
                     position={spot.location}
-                    label={(index + 1).toString()} // Label the pins "1", "2", "3"
+                    label={(index + 1).toString()}
                   />
                 ))}
               </GoogleMap>

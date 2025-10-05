@@ -1,0 +1,50 @@
+That's an excellent and very precise question. You're right, having multiple .gitignore files is confusing. Let me clarify exactly which one to use and why. This is a key part of setting up a project correctly.
+
+You've got the right idea, but we need to put the rule in the correct rulebook.
+
+The Simple Analogy: A Company Rulebook
+Think of your project like a company with two departments:
+
+DivHacks/ is the Main Office.
+
+client/ is the Design Department.
+
+server/ is the Engineering Department.
+
+Each department can have its own little rulebook (.gitignore), but the Main Office has the main company-wide rulebook that applies to everyone.
+
+The Problem
+The file we want to ignore is client/.env.
+
+If you put the rule client/.env inside the Design Department's rulebook (client/.gitignore), the department thinks you mean a file located at client/client/.env, which is the wrong place.
+
+The rule /client/.env needs to be in the Main Office rulebook, because it describes a path starting from the top level of the project.
+
+The Correct Solution: Use the Root .gitignore
+The correct place for this rule is the .gitignore file at the very top level of your DivHacks project. This is the one that sits at the same level as your client and server folders.
+
+Instructions:
+
+Find the .gitignore file in the root of your DivHacks project. If it doesn't exist, create it.
+
+Open it and add the new rules for both your frontend and backend environment files.
+
+Here is what your root .gitignore file should look like. It should contain rules for all parts of your project.
+
+# This is your root .gitignore file at DivHacks/.gitignore
+
+# Ignore the node_modules folder in all directories
+**/node_modules
+
+# Ignore backend secrets
+/server/.env
+
+# Ignore frontend secrets/config
+/client/.env
+
+# Ignore build output folders
+/client/dist
+/client/build
+
+# Ignore log files
+*.log
