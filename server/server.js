@@ -1,17 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 
-// --- SETUP OUR EXPRESS APP ---
 const app = express();
 const port = 5000;
 
-// --- MIDDLEWARE ---
-app.use(cors()); // Allow requests from our React app
-app.use(express.json()); // Allow the server to read JSON from request bodies
+// The simple, reliable middleware order
+app.use(cors());
+app.use(express.json());
 
-// --- IMPORT & USE OUR ROUTES ---
-const sessionRoutes = require('./routes/sessionRoutes'); // Import our new router
-app.use('/api/session', sessionRoutes); // Tell Express to use these routes for any path that starts with /api/session
+const sessionRoutes = require('./routes/sessionRoutes');
+app.use('/api/session', sessionRoutes);
 
-// --- START THE SERVER ---
 app.listen(port, () => console.log(`Server running on port ${port}`));

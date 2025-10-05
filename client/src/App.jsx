@@ -6,7 +6,8 @@ import LandingPage from "./Pages/LandingPage";
 import CreateSession from "./Pages/CreateSession";
 import MemberForm from "./Pages/MemberForm";
 import StartHost from "./Pages/StartHost";
-
+import SessionLobby from "./Pages/SessionLobby";
+import ResultsPage from "./Pages/ResultsPage";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
         <Route path="/create-session" element={<CreateSession />} />
         <Route path="/join" element={<MemberForm />} />
         <Route path="/start" element={<StartHost />} />
+        <Route path="/session/:sessionId" element={<SessionLobby />} />
+        <Route path="/results/:sessionId" element={<ResultsPage />} />
       </Routes>
     </>
   );
