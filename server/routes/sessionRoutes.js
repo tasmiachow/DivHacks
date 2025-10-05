@@ -1,9 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
-
-// --- IMPORT OUR SERVICES ---
-// We now import both functions from our fairness service
 const { geocodeAddress, findNearbyPlaces, getTravelTimes } = require('../services/googleMapsService');
 const { calculateCentroid, rankVenues } = require('../services/fairnessService');
 const { getAISummary } = require('../agents/graph');
@@ -11,30 +7,45 @@ const { getAISummary } = require('../agents/graph');
 
 let sessions = {};
 
-// ... ('/start' and '/join' routes are unchanged) ...
+function generateSessionCode() {
+  return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
 router.post('/start', (req, res) => {
-  const { hostAddress, venueType } = req.body;
-  if (!hostAddress || !venueType) return res.status(400).json({ msg: 'Please provide host address and venue type.' });
-  const sessionId = uuidv4();
-  sessions[sessionId] = { venueType, participants: [{ address: hostAddress, lat: null, lng: null }] };
-  console.log(`[SESSION STARTED] ID: ${sessionId}`);
-  res.status(201).json({ sessionId, sessionData: sessions[sessionId] });
+    const { hostName, hostAddress, venueType } = req.body;
+    if (!hostName || !hostAddress || !venueType) return res.status(400).json({ msg: 'Please provide host name, address, and venue type.' });
+    const sessionId = generateSessionCode();
+    sessions[sessionId] = { venueType, participants: [{ name: hostName, address: hostAddress, lat: null, lng: null }] };
+    console.log(`[SESSION STARTED] ID: ${sessionId}, Host: ${hostName}`);
+    res.status(201).json({ sessionId, sessionData: sessions[sessionId] });
 });
 
 router.post('/join', (req, res) => {
-  const { sessionId, participantAddress } = req.body;
-  if (!sessionId || !participantAddress) return res.status(400).json({ msg: 'Please provide session ID and address.' });
-  const session = sessions[sessionId];
-  if (!session) return res.status(404).json({ msg: 'Session not found.' });
-  session.participants.push({ address: participantAddress, lat: null, lng: null });
-  console.log(`[PARTICIPANT JOINED] ID: ${sessionId}`);
-  res.status(200).json({ msg: 'Participant added!', sessionData: session });
+    const { sessionId, participantName, participantAddress } = req.body;
+    if (!sessionId || !participantName || !participantAddress) return res.status(400).json({ msg: 'Please provide session ID, participant name, and address.' });
+    const session = sessions[sessionId];
+    if (!session) return res.status(404).json({ msg: 'Session not found. Please check the code.' });
+    session.participants.push({ name: participantName, address: participantAddress, lat: null, lng: null });
+    console.log(`[PARTICIPANT JOINED] ID: ${sessionId}, Name: ${participantName}`);
+    res.status(200).json({ msg: 'Participant added!', sessionData: session });
 });
 
+// --- THIS IS THE NEW ENDPOINT FOR THE LOBBY ---
 /**
- * @route   GET /:id/calculate
- * @desc    The main logic endpoint that performs all calculations and returns the top 3 results.
+ * @route   GET /:id
+ * @desc    Gets the current details and participant list for a session.
  */
+router.get('/:id', (req, res) => {
+    const session = sessions[req.params.id];
+    if (session) {
+        console.log(`[FETCHED DETAILS] for session ${req.params.id}`);
+        res.status(200).json(session);
+    } else {
+        res.status(404).json({ msg: 'Session not found.' });
+    }
+});
+
+
 /**
  * @route   GET /:id/calculate
  * @desc    Performs geocoding, nearby search, travel time calculations, and fairness ranking.
@@ -74,11 +85,25 @@ router.get('/:id/calculate', async (req, res) => {
     console.log('[CENTROID CALCULATED]');
 
     // 3️⃣ Find candidate venues (e.g., cafes) near the centroid
-    const candidateVenues = await findNearbyPlaces(centroid, session.venueType);
+    let candidateVenues = await findNearbyPlaces(centroid, session.venueType);
     if (candidateVenues.length === 0) {
       return res.status(404).json({ msg: `No ${session.venueType}s found.` });
     }
-    console.log(`[FOUND ${candidateVenues.length} VENUES]`);
+    console.log(`[FOUND ${candidateVenues.length} VENUES BEFORE FILTERING]`);
+    
+    // 🚫 Filter out unwanted chains (McDonald's, Dunkin', etc.)
+    const excludedKeywords = ["mcdonald", "dunkin", "kfc", "burger king", "taco bell", "chipotle"];
+    const seen = new Set();
+    candidateVenues = candidateVenues.filter(v => {
+      const lowerName = v.name.toLowerCase();
+      const isExcluded = excludedKeywords.some(keyword => lowerName.includes(keyword));
+      const isDuplicate = seen.has(lowerName);
+      if (!isExcluded && !isDuplicate) {
+        seen.add(lowerName);
+        return true;
+      }
+      return false;
+    });
 
     // 4️⃣ Calculate travel times for each participant to each candidate venue
     const origins = session.participants.map(p => ({ lat: p.lat, lng: p.lng }));
@@ -120,7 +145,9 @@ router.get('/:id/calculate', async (req, res) => {
       mode: fairnessMode === 'max' ? 'individual' : 'group',
       results: top3Results,
       aiSummary,
+      
     });
+
 
   } catch (error) {
     console.error('Error during calculation:', error);

@@ -2,11 +2,11 @@
 
 
 ## Run the frontend 
-- cd frontend
+- cd client
 - npm install 
 - npm run dev
 
 ## Backend 
-- cd backend
+- cd server
 - npm install
 - node index.js
