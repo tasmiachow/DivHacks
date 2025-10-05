@@ -5,7 +5,12 @@ const app = express();
 const port = 5000;
 
 // --- MIDDLEWARE ---
-app.use(cors()); // Allow requests from our React app
+app.use(cors({
+    origin: ['https://linkup-nyc-client.onrender.com', 'http://localhost:5173'], // ✅ include frontend URL here
+    methods: ['GET', 'POST'],
+  }));// Allow requests from our React app
+
+
 app.use(express.json()); // Allow the server to read JSON from request bodies
 
 // --- IMPORT & USE OUR ROUTES ---
