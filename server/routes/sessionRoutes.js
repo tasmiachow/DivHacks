@@ -117,6 +117,7 @@ router.get('/:id/calculate', async (req, res) => {
       travelInfo: session.participants.map((p, pIndex) => {
         const element = travelData.rows[pIndex].elements[vIndex];
         return {
+          participantName: p.name,
           participantAddress: p.address,
           durationText: element.duration?.text || 'N/A',
           durationSeconds: element.duration?.value ?? Infinity,
