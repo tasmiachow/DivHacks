@@ -44,14 +44,36 @@ async function findNearbyPlaces(location, type, radius = 1500) {
       },
       timeout: 2000,
     });
+
     if (response.data.status === 'OK') {
-      return response.data.results.map(place => ({
+      let places = response.data.results.map(place => ({
         name: place.name,
         address: place.vicinity,
         rating: place.rating,
         location: place.geometry.location,
         place_id: place.place_id,
       }));
+
+      // 🚫 Filter out unwanted places (McDonald's, Dunkin', etc.)
+      const excludedKeywords = ["mcdonald", "dunkin", "kfc", "burger king", "taco bell", "chipotle"];
+      places = places.filter(p => {
+        const lowerName = p.name.toLowerCase();
+        return !excludedKeywords.some(keyword => lowerName.includes(keyword));
+      });
+
+      //Filter out duplicates like starbucks 
+      const seenNames = new Set();
+      places = places.filter(p => {
+        const lowerName = p.name.toLowerCase();
+        if (seenNames.has(lowerName)) return false;
+        seenNames.add(lowerName);
+        return true;
+      });
+
+      // ⭐ Optional: filter out low-rated places
+      // places = places.filter(p => p.rating === undefined || p.rating >= 4.0);
+
+      return places;
     } else {
       console.error('Nearby places search failed:', response.data.status);
       return [];
