@@ -17,7 +17,7 @@ const mapContainerStyle = {
 
 function ResultsPage() {
   const location = useLocation();
-  const results = location.state?.results;
+  const { results, aiSummary } = location.state || {};
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
@@ -34,7 +34,9 @@ function ResultsPage() {
   }
 
   const currentSpot = results[currentIndex];
-
+  const summarySentences = aiSummary ? aiSummary.split(/\d+\.\s/) : [];
+  const currentSummary = summarySentences[currentIndex + 1] || '';
+  
   return (
     <div className="py-5 min-vh-100 bg-light">
       <Container fluid className="pt-5">
@@ -47,7 +49,7 @@ function ResultsPage() {
                 <Card.Title className="fw-bold display-6">{currentIndex + 1}. {currentSpot.name}</Card.Title>
                 <Card.Subtitle className="mb-3 text-muted">{currentSpot.address}</Card.Subtitle>
                 <Alert variant="info">
-                  <strong>Fairness Score:</strong> This is the #<strong>{currentIndex + 1}</strong> best spot, minimizing the longest travel time.
+                <strong>AI Summary:</strong> {currentSummary.trim()}
                 </Alert>
                 <hr />
                 <Card.Text as="div">

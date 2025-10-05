@@ -38,11 +38,11 @@ async function getSessionDetails(sessionId) {
 async function calculateResults(sessionId) {
     const response = await fetch(`${API_BASE_URL}/session/${sessionId}/calculate`);
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.msg || 'Failed to calculate results.');
+      const errorData = await response.json();
+      throw new Error(errorData.msg || 'Failed to calculate results.');
     }
     const data = await response.json();
-    return data.results;
+    return data;  // return the whole object, not just data.results
 }
 
 // THIS LINE IS THE FIX. IT NOW INCLUDES ALL FOUR FUNCTIONS.

@@ -25,8 +25,8 @@ function SessionLobby() {
 
   const handleCalculate = async () => {
     try {
-      const results = await calculateResults(sessionId);
-      navigate(`/results/${sessionId}`, { state: { results: results } });
+      const data = await calculateResults(sessionId);
+      navigate(`/results/${sessionId}`, { state: data });
     } catch (err) {
       setError(err.message);
     }
