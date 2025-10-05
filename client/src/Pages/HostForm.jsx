@@ -25,7 +25,7 @@ function App() {
           <div className="input-group">
             <input
               type="text"
-              placeholder="🔑 Meetup Code"
+              placeholder="🔑 Party Code"
               value={code}
               onChange={e => setCode(e.target.value)}
               required
@@ -33,7 +33,7 @@ function App() {
             />
             <input
               type="text"
-              placeholder="👤 Your Name"
+              placeholder="👤 Host Name"
               value={name}
               onChange={e => setName(e.target.value)}
               required

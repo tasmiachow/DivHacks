@@ -43,3 +43,19 @@
 .read-the-docs {
   color: #888;
 }
+
+.btn-primary {
+  background: linear-gradient(135deg, #74b9ff, #81ecec);
+  color: #202124;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #81ecec, #74b9ff);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}

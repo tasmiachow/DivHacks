@@ -34,7 +34,7 @@ function HostForm() {
                 <Form.Group controlId="formCode">
                   <Form.Control
                     type="text"
-                    placeholder="🔑 Meetup Code"
+                    placeholder="🔑 Party Code"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     required
@@ -45,7 +45,7 @@ function HostForm() {
                 <Form.Group controlId="formName">
                   <Form.Control
                     type="text"
-                    placeholder="👤 Your Name"
+                    placeholder="👤 Host Name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
