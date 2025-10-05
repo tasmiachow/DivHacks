@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.PROD 
+ ?"https://linkup-nyc-server.onrender.com/"
+ : 'http://localhost:5000/api';
 
 async function startSession(hostName, hostAddress, venueType) {
     const response = await fetch(`${API_BASE_URL}/session/start`, {
