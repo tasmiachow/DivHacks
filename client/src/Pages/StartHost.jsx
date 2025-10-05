@@ -1,39 +1,106 @@
 import React, { useState } from "react";
-import { Container, Form, Button, Row, Col, Alert } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { startSession } from "../services/apiService";
+import { Container, Form, Button, Card, Row, Col } from "react-bootstrap";
 
-function StartHost() {
+function HostForm() {
+  const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-  const [venueType, setVenueType] = useState("cafe");
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [option, setOption] = useState("cafe");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError(null);
-    try {
-      const data = await startSession(name, location, venueType);
-      navigate(`/session/${data.sessionId}`); // Navigate to the lobby
-    } catch (err) {
-      setError(err.message);
-    }
+    alert(`Name: ${name}\nCode: ${code}\nLocation: ${location}\nOption: ${option}`);
   };
 
   return (
-    <div className="py-5 min-vh-100 bg-light">
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "linear-gradient(135deg, #e8f0fe 0%, #c8f7e2 60%, #ffffff 100%)",
+      }}
+    >
       <Container>
-        <h2 className="pt-5 mb-4 text-center fw-bold">Start a New Session</h2>
-        <Row className="justify-content-center"><Col xs={12} md={8} lg={6}><Form onSubmit={handleSubmit} className="shadow-sm p-4 rounded bg-white">
-          <Form.Group className="mb-3"><Form.Label>Your Name</Form.Label><Form.Control type="text" placeholder="Enter your name" value={name} onChange={(e) => setName(e.target.value)} required /></Form.Group>
-          <Form.Group className="mb-3"><Form.Label>Your Location</Form.Label><Form.Control type="text" placeholder="Enter your address" value={location} onChange={(e) => setLocation(e.target.value)} required /></Form.Group>
-          <Form.Group className="mb-4"><Form.Label>Meetup Spot</Form.Label><Form.Select value={venueType} onChange={(e) => setVenueType(e.target.value)}><option value="cafe">Cafe ☕</option><option value="restaurant">Restaurant 🍝</option></Form.Select></Form.Group>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <div className="d-grid"><Button variant="primary" size="lg" type="submit">Create Session</Button></div>
-        </Form></Col></Row>
+        <Card
+          className="shadow-lg p-4 mx-auto"
+          style={{ maxWidth: "600px", borderRadius: "20px" }}
+        >
+          <h2 className="fw-bold text-center mb-4">Host a Meetup 🚀</h2>
+          <Form onSubmit={handleSubmit}>
+            <Row className="mb-3">
+              <Col>
+                <Form.Group controlId="formCode">
+                  <Form.Control
+                    type="text"
+                    placeholder="🔑 Meetup Code"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="formName">
+                  <Form.Control
+                    type="text"
+                    placeholder="👤 Your Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Form.Group className="mb-3" controlId="formLocation">
+              <Form.Control
+                type="text"
+                placeholder="📍 Location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                required
+              />
+            </Form.Group>
+
+            <div className="d-flex justify-content-center gap-3 mb-4">
+              <Button
+                variant={option === "cafe" ? "primary" : "outline-primary"}
+                onClick={() => setOption("cafe")}
+                style={{ borderRadius: "12px", minWidth: "100px" }}
+              >
+                ☕ Cafe
+              </Button>
+              <Button
+                variant={option === "restaurant" ? "primary" : "outline-primary"}
+                onClick={() => setOption("restaurant")}
+                style={{ borderRadius: "12px", minWidth: "100px" }}
+              >
+                🍳 Restaurant
+              </Button>
+            </div>
+
+            <div className="text-center">
+              <Button
+                type="submit"
+                size="lg"
+                style={{
+                  background: "linear-gradient(90deg, #ff758c, #ff7eb3)",
+                  border: "none",
+                  borderRadius: "14px",
+                  fontWeight: 600,
+                  padding: "0.75rem 2rem",
+                }}
+              >
+                Let’s LinkUp ✨
+              </Button>
+            </div>
+          </Form>
+        </Card>
       </Container>
     </div>
   );
 }
-export default StartHost;
+
+export default HostForm;

@@ -1,6 +1,8 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import logo from "../assets/logo.svg";
+
 
 function NavigationBar() {
     const glassStyle = {
@@ -13,9 +15,19 @@ function NavigationBar() {
     return (
         <Navbar expand="lg" fixed="top" style={glassStyle} className="px-4 py-3">
             <Container fluid className="px-0">
-                <Navbar.Brand as={Link} to="/" className="fw-bold text-dark">
-                    LinkUP NYC
+                <Navbar.Brand as={Link} to="/" className="d-flex align-items-center fw-bold text-dark">
+                    <img
+                        src={logo}
+                        alt="LinkUP logo"
+                        style={{
+                            height: "40px",
+                            width: "40px",
+                            objectFit: "contain",
+                        }}
+                    />
+                    LinkUP
                 </Navbar.Brand>
+
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Nav>
