@@ -32,34 +32,39 @@ function calculateCentroid(participants) {
  * @param {string} mode - The fairness mode ('max' or 'total').
  * @returns {Array<object>} The sorted array of venues.
  */
+
 function rankVenues(venues, mode = 'max') {
-  // First, calculate a score for each venue.
   const scoredVenues = venues.map(venue => {
-    // Calculate the total travel time for this venue (sum of all trips in seconds).
-    const totalTime = venue.travelInfo.reduce((sum, info) => sum + info.durationSeconds, 0);
+    const times = venue.travelInfo.map(info => info.durationSeconds);
+    const totalTime = times.reduce((a, b) => a + b, 0);
+    const maxTime = Math.max(...times);
+    const minTime = Math.min(...times);
+    const difference = maxTime - minTime; // fairness deviation
 
-    // Find the longest single trip to this venue in seconds.
-    const maxTime = Math.max(...venue.travelInfo.map(info => info.durationSeconds));
-
-    // Return a new object with the scores attached.
     return {
       ...venue,
       totalTimeSeconds: totalTime,
       maxTimeSeconds: maxTime,
+      differenceSeconds: difference,
     };
   });
 
-  // Now, sort the venues based on the chosen mode.
   if (mode === 'total') {
-    // Sort by the lowest total group travel time.
+    // Group fairness — minimize total travel time
     scoredVenues.sort((a, b) => a.totalTimeSeconds - b.totalTimeSeconds);
   } else {
-    // Default to sorting by the lowest maximum individual travel time.
-    scoredVenues.sort((a, b) => a.maxTimeSeconds - b.maxTimeSeconds);
+    // Individual fairness — prioritize the most balanced travel times
+    scoredVenues.sort((a, b) => {
+      // Primary: minimize the difference between participants
+      if (a.differenceSeconds !== b.differenceSeconds) {
+        return a.differenceSeconds - b.differenceSeconds;
+      }
+      // Secondary: minimize the longest single travel time
+      return a.maxTimeSeconds - b.maxTimeSeconds;
+    });
   }
 
   return scoredVenues;
 }
 
-// Export both functions so we can use them elsewhere.
 module.exports = { calculateCentroid, rankVenues };
