@@ -49,7 +49,7 @@ function ResultsPage() {
                 <Card.Title className="fw-bold display-6">{currentIndex + 1}. {currentSpot.name}</Card.Title>
                 <Card.Subtitle className="mb-3 text-muted">{currentSpot.address}</Card.Subtitle>
                 <Alert variant="info">
-                <strong>AI Summary:</strong> {currentSummary.trim()}
+                <strong>Overview:</strong> {currentSummary.trim()}
                 </Alert>
                 <hr />
                 <Card.Text as="div">
@@ -65,6 +65,11 @@ function ResultsPage() {
                 <div className="d-grid mt-4">
                   <Button variant="primary" size="lg" onClick={handleNext}>
                     Next Recommendation →
+                  </Button>
+                </div>
+                <div className="d-grid mt-4">
+                  <Button variant="danger" size="lg" onClick={""}>
+                    Regenerate
                   </Button>
                 </div>
               </Card.Body>
